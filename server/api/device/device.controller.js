@@ -11,6 +11,8 @@ var devices = require('../../config/sensors').getDevices();
 var users = require('../../config/users').getUsers();
 var deviceSocket = require('./device.socket');
 
+var db = require('../../middleware/database/index');
+
 var MQTT_PUBLISH_OPTS = {retain: true};
 
 function checkValueRange(value, min, max) {
@@ -65,6 +67,7 @@ exports.getDevice = function(req, res) {
     return res.status(404).send('device not found');
   }
   var device = devices[deviceIndex];
+  
   res.json(device);
 };
 
@@ -73,6 +76,7 @@ exports.setDevice = function(req, res) {
   var deviceId = req.params.deviceId;
   var uploadedDevice = req.body;
   //console.log('setDevice ' + deviceId, uploadedDevice);
+  
   var deviceIndex = _.findIndex(devices, {id: deviceId});
   if (deviceIndex === -1) {
     return res.status(404).send('device not found');
@@ -159,6 +163,14 @@ exports.deleteDevice = function(req, res) {
 
 // Get device sensor
 exports.getSensor = function(req, res) {
+
+  /*req.db.get('readings').find({}, {}, function (e, docs) {
+    //console.log('e: ', e);
+    //console.log('docs: ', JSON.stringify(docs));
+    //console.log('docs.garages[0]', docs.garages[0]);
+  });*//*
+  console.log('hello');*/
+
   var deviceId = req.params.deviceId;
   var sensorId = req.params.sensorId;
   var deviceIndex = _.findIndex(devices, {id: deviceId});
@@ -170,13 +182,18 @@ exports.getSensor = function(req, res) {
   if (sensorIndex === -1) {
     return res.status(404).send('sensor not found');
   }
-  var sensor = device.sensors[sensorIndex];
+  //var sensor = device.sensors[sensorIndex];
+  var sensor = db.getParkingData(req.db.get('readings'), function(result) {
+    console.log('result: ', result);
+  });
+  //sconsole.log(sensor);
   res.json(sensor);
 };
 
 // Set device sensor
 exports.setSensor = function(req, res) {
-  //console.log('setSensor');
+  console.log('setSensor');
+  console.log('\n\n\n**************************************Database: ', req.db);
   var deviceId = req.params.deviceId;
   var sensorId = req.params.sensorId;
   var uploadedSensor = req.body;

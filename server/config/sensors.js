@@ -33,7 +33,7 @@ var sensors = [
     {id: 'PersonProximity', index: 8, info: '(Person) proximity sensor based e.g. on ultra-sound sensor, 0-800cm', type: 'int', minValue: 0, maxValue: 800, value: 800, timestamp: '1970-01-01T00:00:00.000Z'},
     {id: 'TrafficDensity', index: 9, info: 'Normalized traffic density, 0-100', type: 'int', minValue: 0, maxValue: 100, value: 50, timestamp: '1970-01-01T00:00:00.000Z'},
     {id: 'Events', index: 10, info: 'Current events in the area', type: 'string', value: 'Market,Concert', timestamp: '1970-01-01T00:00:00.000Z'}, 
-	{id: 'ActualParkingData', index: 10, infod: 'Actual data that we need', type: 'json'}];
+	  {id: 'ActualParkingData', index: 11, info: 'Actual data that we need', type: 'JSON', value: {'a':'b'}, timestamp: '1970-01-01T00:00:00.000Z'}];
 
 var currentSensorDevices;
 var forecastSensorDevices = {};

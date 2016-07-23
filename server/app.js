@@ -10,10 +10,20 @@ console.log('==> NODE_ENV =', process.env.NODE_ENV);
 var express = require('express');
 var config = require('./config/environment');
 
+// Set up MongoDB 
+var mongo = require('mongodb');
+var monk = require('monk');
+var db = monk('localhost:27017/first');
+
 // Setup server
 var app = express();
 var server = require('http').createServer(app);
 require('./config/express')(app);
+// Make our db accessible to our router 
+app.use(function(req, res, next) {
+	req.db = db;
+	next();
+});
 require('./routes')(app);
 
 // init websocket
