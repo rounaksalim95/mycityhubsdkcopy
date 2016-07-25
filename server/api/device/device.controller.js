@@ -183,11 +183,17 @@ exports.getSensor = function(req, res) {
     return res.status(404).send('sensor not found');
   }
   //var sensor = device.sensors[sensorIndex];
-  var sensor = db.getParkingData(req.db.get('readings'), function(result) {
+  /*var sensor = db.getParkingData(req.db.get('readings'), function(result) {
     console.log('result: ', result);
   });
-  //sconsole.log(sensor);
-  res.json(sensor);
+*/  //sconsole.log(sensor);
+  var collection = req.db.get('readings');
+  var sensor = collection.find({}, {}, function (e, docs) {
+    console.log("This is happening \n");
+    console.log("==========> \n " + JSON.stringify(docs));
+    res.json(docs);
+  });
+  /*res.json(sensor);*/
 };
 
 // Set device sensor
