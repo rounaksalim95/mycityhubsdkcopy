@@ -1,4 +1,4 @@
-var mongo = require('mongo');
+var mongo = require('mongodb');
 
 function getParkingData(collection, res) {
 	collection.find({}, {}, function (e, docs) {
@@ -6,6 +6,17 @@ function getParkingData(collection, res) {
 	});
 }
 
+function getBusDelay(collection, tripId, res) {
+	collection.find({trip_id : tripId}, {}, function(e, docs) {
+		res.json(docs);
+	});
+}
+
 module.exports = {
-	getParkingData: getParkingData
+
+	// Gets all the parking data present in the DB 
+	getParkingData: getParkingData,
+
+	// Gets bus delay data pertaining to the specified trip_id
+	getBusDelay: getBusDelay
 }

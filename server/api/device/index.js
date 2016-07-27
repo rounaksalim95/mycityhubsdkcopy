@@ -22,5 +22,6 @@ router.post('/:deviceId/:sensorId/increase', controller.increaseSensor);
 router.post('/:deviceId/:sensorId/decrease', controller.decreaseSensor);
 router.post('/:deviceId/:sensorId/process', controller.process);
 router.delete('/:deviceId/:sensorId', controller.deleteSensor);
+router.get('/:deviceId/:sensorId/:tripId', controller.getSensor);
 
 module.exports = router;

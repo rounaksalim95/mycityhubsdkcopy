@@ -10,18 +10,24 @@ console.log('==> NODE_ENV =', process.env.NODE_ENV);
 var express = require('express');
 var config = require('./config/environment');
 
-// Set up MongoDB 
+// Setup MongoDB
 var mongo = require('mongodb');
 var monk = require('monk');
-var db = monk('localhost:27017/first');
+// Used for testing purposes; replace with actual DB 
+var parkingDB = monk('localhost:27017/first');
+var busDelayDB = monk('localhost:27017/busDelay');
 
 // Setup server
 var app = express();
 var server = require('http').createServer(app);
 require('./config/express')(app);
-// Make our db accessible to our router 
+// Make our DB accessible to our router 
 app.use(function(req, res, next) {
-	req.db = db;
+	req.parkingDB = parkingDB;
+	next();
+});
+app.use(function(req, res, next) {
+	req.busDelayDB = busDelayDB;
 	next();
 });
 require('./routes')(app);
