@@ -11,7 +11,7 @@ var devices = require('../../config/sensors').getDevices();
 var users = require('../../config/users').getUsers();
 var deviceSocket = require('./device.socket');
 
-var db = require('../../middleware/database/index');
+var db = require('../../middleware/database');
 
 var MQTT_PUBLISH_OPTS = {retain: true};
 

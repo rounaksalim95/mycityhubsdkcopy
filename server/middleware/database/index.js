@@ -1,14 +1,11 @@
+var mongo = require('mongo');
 
-function getParkingData(collection) {
-    collection.find({}, {}, function(e, docs) {
-        return JSON.stringify(docs);
-    });
+function getParkingData(collection, res) {
+	collection.find({}, {}, function (e, docs) {
+		res.json(docs);
+	});
 }
 
-/*function addParkingData(db, data) {
-    db.reading.insert(data);
-}*/
-
 module.exports = {
-    getParkingData: getParkingData
+	getParkingData: getParkingData
 }
