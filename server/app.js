@@ -17,18 +17,27 @@ var monk = require('monk');
 var parkingDB = monk('localhost:27017/first');
 var busDelayDB = monk('localhost:27017/busDelay');
 
+// Setup MongoOplog to check for changes in the database (parking data)
+var MongoOplog = require('mongo-oplog');
+var oplog = MongoOplog('mongodb://127.0.0.1.27017/local', { ns: 'first.readings'}).tail();
+
+// Setup the listener for any updates to the database  
+oplog.on('update', function (doc) {
+  console.log('Database has been updated');
+});
+
 // Setup server
 var app = express();
 var server = require('http').createServer(app);
 require('./config/express')(app);
 // Make our DB accessible to our router 
 app.use(function(req, res, next) {
-	req.parkingDB = parkingDB;
-	next();
+  req.parkingDB = parkingDB;
+  next();
 });
 app.use(function(req, res, next) {
-	req.busDelayDB = busDelayDB;
-	next();
+  req.busDelayDB = busDelayDB;
+  next();
 });
 require('./routes')(app);
 
