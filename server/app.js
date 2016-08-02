@@ -19,11 +19,15 @@ var busDelayDB = monk('localhost:27017/busDelay');
 
 // Setup MongoOplog to check for changes in the database (parking data)
 var MongoOplog = require('mongo-oplog');
-var oplog = MongoOplog('mongodb://127.0.0.1.27017/local', { ns: 'first.readings'}).tail();
+var oplog = MongoOplog('mongodb://localhost:27017/local', { ns: 'first.readings'}).tail();
 
-// Setup the listener for any updates to the database  
-oplog.on('update', function (doc) {
-  console.log('Database has been updated');
+// Setup the listener for any updates to the database (update not working so use insert and delete)
+oplog.on('insert', function (doc) {
+  console.log(doc.op);
+});
+
+oplog.on('delete', function (doc) {
+  console.log('deleted');
 });
 
 // Setup server
