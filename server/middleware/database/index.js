@@ -1,8 +1,16 @@
+'use strict';
+
 var mongo = require('mongodb');
 
 function getParkingData(collection, res) {
 	collection.find({}, {}, function (e, docs) {
 		res.json(docs);
+	});
+}
+
+function getParkingData(collection) {
+	collection.find({}, {}, function (e, docs) {
+		return json(docs);
 	});
 }
 

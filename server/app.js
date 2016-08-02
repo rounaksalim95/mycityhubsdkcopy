@@ -9,6 +9,8 @@ console.log('==> NODE_ENV =', process.env.NODE_ENV);
 
 var express = require('express');
 var config = require('./config/environment');
+// Require this for database helper methods 
+var database = require('./middleware/database');
 
 // Setup MongoDB
 var mongo = require('mongodb');
@@ -17,18 +19,8 @@ var monk = require('monk');
 var parkingDB = monk('localhost:27017/first');
 var busDelayDB = monk('localhost:27017/busDelay');
 
-// Setup MongoOplog to check for changes in the database (parking data)
-var MongoOplog = require('mongo-oplog');
-var oplog = MongoOplog('mongodb://localhost:27017/local', { ns: 'first.readings'}).tail();
-
-// Setup the listener for any updates to the database (update not working so use insert and delete)
-oplog.on('insert', function (doc) {
-  console.log(doc.op);
-});
-
-oplog.on('delete', function (doc) {
-  console.log('deleted');
-});
+// Collection being used for ParkingData 
+var collection = parkingDB.get('readings');
 
 // Setup server
 var app = express();
@@ -44,6 +36,26 @@ app.use(function(req, res, next) {
   next();
 });
 require('./routes')(app);
+
+// WebSockets for use with ParkingData 
+var WebSocketServer = require('ws').Server,
+  wss = new WebSocketServer({ server: server });
+
+// Setup MongoOplog to check for changes in the database (parking data)
+var MongoOplog = require('mongo-oplog');
+var oplog = MongoOplog('mongodb://localhost:27017/local', { ns: 'first.readings'}).tail();
+
+// Setup the listener for any updates to the database (update not working so use insert and delete)
+oplog.on('insert', function (doc) {
+  console.log(JSON.stringify(doc));
+  // Send the data via the WebSockets 
+  var data = database.getParkingData(collection);
+  console.log(JSON.stringify(data));
+});
+
+oplog.on('delete', function (doc) {
+  console.log('deleted');
+});
 
 // init websocket
 app.socketio = require('socket.io')(server, {
