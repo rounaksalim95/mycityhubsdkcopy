@@ -41,6 +41,17 @@ require('./routes')(app);
 var WebSocketServer = require('ws').Server,
   wss = new WebSocketServer({ server: server });
 
+/*wss.on('connection', function connection(ws) {
+  ws.on('message', function incoming(message, flags) {
+    if (flags.binary) {
+      console.log('Not managed yet...');
+    } else {
+      console.log('Received: %s', message);
+      ws.send('ping');
+    }
+  });
+});*/
+
 // Setup MongoOplog to check for changes in the database (parking data)
 var MongoOplog = require('mongo-oplog');
 var oplog = MongoOplog('mongodb://localhost:27017/local', { ns: 'first.readings'}).tail();
@@ -52,6 +63,10 @@ oplog.on('update', function (doc) {
 
 oplog.on('insert', function (doc) {
   database.getParkingData(collection, function(err, result) {
+    // Broadcast the message to every client 
+    wss.clients.forEach(function (client) {
+      client.send(JSON.stringify(result));
+    });
     console.log(JSON.stringify(result));
   });
 });
