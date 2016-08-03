@@ -51,10 +51,8 @@ oplog.on('update', function (doc) {
 });
 
 oplog.on('insert', function (doc) {
-  var data;
-  collection.find({}, {}, function(e, docs) {
-    data = JSON.stringify(docs);
-    console.log('2   ' + data);
+  database.getParkingData(collection, function(err, result) {
+    console.log(JSON.stringify(result));
   });
 });
 

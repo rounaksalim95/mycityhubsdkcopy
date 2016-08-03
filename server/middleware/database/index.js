@@ -8,6 +8,13 @@ function getParkingData(collection, res) {
 	});
 }
 
+// Used to get ParkingData from the database (for use with WebSockets)
+function getParkingData(collection, callback) {
+	collection.find({}, {}, function (e, docs) {
+		callback(null, docs);
+	});
+}
+
 function getBusDelay(collection, tripId, res) {
 	collection.find({trip_id : tripId}, {}, function(e, docs) {
 		res.json(docs);
