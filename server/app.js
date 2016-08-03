@@ -45,16 +45,21 @@ var WebSocketServer = require('ws').Server,
 var MongoOplog = require('mongo-oplog');
 var oplog = MongoOplog('mongodb://localhost:27017/local', { ns: 'first.readings'}).tail();
 
-// Setup the listener for any updates to the database (update not working so use insert and delete)
-oplog.on('insert', function (doc) {
+// Setup the listener for any updates to the database
+oplog.on('update', function (doc) {
   console.log(JSON.stringify(doc));
-  // Send the data via the WebSockets 
-  var data = database.getParkingData(collection);
-  console.log(JSON.stringify(data));
+});
+
+oplog.on('insert', function (doc) {
+  var data;
+  collection.find({}, {}, function(e, docs) {
+    data = JSON.stringify(docs);
+    console.log('2   ' + data);
+  });
 });
 
 oplog.on('delete', function (doc) {
-  console.log('deleted');
+  console.log('deleted     ' + JSON.stringify(doc));
 });
 
 // init websocket

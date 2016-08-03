@@ -8,12 +8,6 @@ function getParkingData(collection, res) {
 	});
 }
 
-function getParkingData(collection) {
-	collection.find({}, {}, function (e, docs) {
-		return json(docs);
-	});
-}
-
 function getBusDelay(collection, tripId, res) {
 	collection.find({trip_id : tripId}, {}, function(e, docs) {
 		res.json(docs);
