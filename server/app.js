@@ -62,12 +62,12 @@ oplog.on('update', function (doc) {
 });
 
 oplog.on('insert', function (doc) {
-  database.getParkingData(collection, function(err, result) {
+  database.getParkingDataWebSockets(collection, function(err, result) {
     // Broadcast the message to every client 
     wss.clients.forEach(function (client) {
       client.send(JSON.stringify(result));
+      console.log(JSON.stringify(result));
     });
-    console.log(JSON.stringify(result));
   });
 });
 
