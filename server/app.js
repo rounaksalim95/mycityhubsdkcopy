@@ -71,10 +71,6 @@ oplog.on('insert', function (doc) {
   });
 });
 
-oplog.on('delete', function (doc) {
-  console.log('deleted     ' + JSON.stringify(doc));
-});
-
 // init websocket
 app.socketio = require('socket.io')(server, {
   serveClient: (config.env === 'production') ? false : true,
