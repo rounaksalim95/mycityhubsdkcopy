@@ -173,7 +173,7 @@ exports.getSensor = function(req, res) {
   }
   if (sensorId == 'ParkingData') {
     // Collection that holds your data; change accordingly 
-    var collection = req.parkingDB.get('readings');
+    var collection = req.parkingDB.get('info');
     database.getParkingData(collection, res);
   } else if (sensorId == 'BusDelayData') {
     // Collection that holds your data; change accordingly 

@@ -16,11 +16,11 @@ var database = require('./middleware/database');
 var mongo = require('mongodb');
 var monk = require('monk');
 // Used for testing purposes; replace with actual DB 
-var parkingDB = monk('localhost:27017/first');
+var parkingDB = monk('129.59.105.164:27017/garageinfo');
 var busDelayDB = monk('localhost:27017/busDelay');
 
 // Collection being used for ParkingData 
-var collection = parkingDB.get('readings');
+var collection = parkingDB.get('info');
 
 // Setup server
 var app = express();
@@ -66,7 +66,6 @@ oplog.on('insert', function (doc) {
     // Broadcast the message to every client 
     wss.clients.forEach(function (client) {
       client.send(JSON.stringify(result));
-      console.log(JSON.stringify(result));
     });
   });
 });
