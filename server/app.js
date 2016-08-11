@@ -54,14 +54,21 @@ var WebSocketServer = require('ws').Server,
 
 // Setup MongoOplog to check for changes in the database (parking data)
 var MongoOplog = require('mongo-oplog');
-var oplog = MongoOplog('mongodb://localhost:27017/local', { ns: 'garageinfo.info'}).tail();
+var oplog = MongoOplog('mongodb://129.59.105.158:27017/local', { ns: 'garageinfo.info'}).tail();
 
 // Setup the listener for any updates to the database
 oplog.on('update', function (doc) {
   console.log(JSON.stringify(doc));
+  database.getParkingDataWebSockets(collection, function(err, result) {
+    // Broadcast the message to every client 
+    wss.clients.forEach(function (client) {
+      client.send(JSON.stringify(result));
+    });
+  });
 });
 
 oplog.on('insert', function (doc) {
+  console.log("INSERTED");
   database.getParkingDataWebSockets(collection, function(err, result) {
     // Broadcast the message to every client 
     wss.clients.forEach(function (client) {
@@ -71,6 +78,7 @@ oplog.on('insert', function (doc) {
 });
 
 oplog.on('delete', function (doc) {
+  console.log("DELETED");
   database.getParkingDataWebSockets(collection, function(err, result) {
     // Broadcast the message to every client 
     wss.clients.forEach(function (client) {
