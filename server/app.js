@@ -54,7 +54,7 @@ var WebSocketServer = require('ws').Server,
 
 // Setup MongoOplog to check for changes in the database (parking data)
 var MongoOplog = require('mongo-oplog');
-var oplog = MongoOplog('mongodb://localhost:27017/local', { ns: 'first.readings'}).tail();
+var oplog = MongoOplog('mongodb://localhost:27017/local', { ns: 'garageinfo.info'}).tail();
 
 // Setup the listener for any updates to the database
 oplog.on('update', function (doc) {
