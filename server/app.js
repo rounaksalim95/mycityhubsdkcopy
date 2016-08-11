@@ -16,7 +16,7 @@ var database = require('./middleware/database');
 var mongo = require('mongodb');
 var monk = require('monk');
 // Used for testing purposes; replace with actual DB 
-var parkingDB = monk('129.59.105.164:27017/garageinfo');
+var parkingDB = monk('129.59.105.158:27017/garageinfo');
 var busDelayDB = monk('localhost:27017/busDelay');
 
 // Collection being used for ParkingData 
@@ -62,6 +62,15 @@ oplog.on('update', function (doc) {
 });
 
 oplog.on('insert', function (doc) {
+  database.getParkingDataWebSockets(collection, function(err, result) {
+    // Broadcast the message to every client 
+    wss.clients.forEach(function (client) {
+      client.send(JSON.stringify(result));
+    });
+  });
+});
+
+oplog.on('delete', function (doc) {
   database.getParkingDataWebSockets(collection, function(err, result) {
     // Broadcast the message to every client 
     wss.clients.forEach(function (client) {
