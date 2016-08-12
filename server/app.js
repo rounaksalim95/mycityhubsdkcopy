@@ -58,6 +58,7 @@ var oplog = MongoOplog('mongodb://129.59.105.158:27017/local', { ns: 'garageinfo
 
 // Setup the listener for any updates to the database
 oplog.on('update', function (doc) {
+  console.log("UPDATED");
   console.log(JSON.stringify(doc));
   database.getParkingDataWebSockets(collection, function(err, result) {
     // Broadcast the message to every client 
