@@ -70,6 +70,15 @@ oplog.on('insert', function (doc) {
   });
 });
 
+oplog.on('delete', function (doc) {
+  database.getParkingDataWebSockets(collection, function(err, result) {
+    // Broadcast the message to every client 
+    wss.clients.forEach(function (client) {
+      client.send(JSON.stringify(result));
+    });
+  });
+});
+
 // init websocket
 app.socketio = require('socket.io')(server, {
   serveClient: (config.env === 'production') ? false : true,
