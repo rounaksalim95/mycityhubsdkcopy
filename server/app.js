@@ -17,26 +17,11 @@ var database = require('./middleware/database');
 var mongo = require('mongodb');
 var monk = require('monk');
 
-/*var parkingDB = monk('localhost:27017/garageinfo');
-var busDelayDB = monk('localhost:27017/busDelay');
-*/
-// Collection being used for ParkingData 
-/*var collection = parkingDB.get('info');*/
-
 
 // Setup server
 var app = express();
 var server = require('http').createServer(app);
 require('./config/express')(app);
-/*// Make our DB accessible to our router 
-app.use(function(req, res, next) {
-  req.parkingDB = parkingDB;
-  next();
-});
-app.use(function(req, res, next) {
-  req.busDelayDB = busDelayDB;
-  next();
-});*/
 require('./routes')(app);
 
 // Setup MongoOplog to check for changes in the database (parking data)
