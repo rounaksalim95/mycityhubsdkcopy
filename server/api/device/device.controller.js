@@ -14,6 +14,8 @@ var users = require('../../config/users').getUsers();
 var deviceSocket = require('./device.socket');
 var database = require('../../middleware/database');
 
+var oplogWebsockets = require('../../config/mongo_websockets_setup');
+
 var MQTT_PUBLISH_OPTS = {retain: true};
 
 function checkValueRange(value, min, max) {
@@ -112,8 +114,8 @@ exports.setDevice = function(req, res) {
             uploadedSensor.value = val;
           }
         }
-      } // if (sensorIndex !== -1)
-    } // for
+      } 
+    } 
   }
   _.merge(device, uploadedDevice);
 
@@ -243,6 +245,9 @@ exports.setSensor = function(req, res) {
 
   // notify modified sensor value through websocket
   deviceSocket.onDeviceChange(device);
+
+  // Reset mongo-oplog listeners and websockets 
+  oplogWebsockets.setupParkingDataSensor();
 
   res.json(device.sensors[sensorIndex]);
 };

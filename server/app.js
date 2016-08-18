@@ -9,14 +9,24 @@ console.log('==> NODE_ENV =', process.env.NODE_ENV);
 
 var express = require('express');
 var config = require('./config/environment');
-// Require this for database helper methods 
-var database = require('./middleware/database');
 
+/*// Require this for database helper methods 
+var database = require('./middleware/database');*/
 
+/*
 // Setup MongoDB
 var mongo = require('mongodb');
-var monk = require('monk');
+var monk = require('monk');*/
 
+// Global variables that hold the values required for setting up mongo-oplog and websockets 
+global.oplogGlobalHolder = []; 
+global.parkingDataGlobalHolder = [];
+global.collectionGlobalHolder = [];
+global.websocketportGlobalHolder = [];
+global.wssGlobalHolder = [];
+
+var oplogWebsockets = require('./config/mongo_websockets_setup');
+oplogWebsockets.setupParkingDataSensor();
 
 // Setup server
 var app = express();
@@ -24,7 +34,7 @@ var server = require('http').createServer(app);
 require('./config/express')(app);
 require('./routes')(app);
 
-// Setup MongoOplog to check for changes in the database (parking data)
+/*// Setup MongoOplog to check for changes in the database (parking data)
 var MongoOplog = require('mongo-oplog');
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -35,8 +45,7 @@ var _ = require('lodash');
 // we can attach WebSocket to specified port 
 var devices = require('./config/sensors').getDevices();
 
-// Multidimensional holders to hold values for different sensors in different devices 
-// First value is for devices and second is for sensors
+// Holders for intermediate values 
 var oplogHolder = []; 
 var parkingDataHolder = [];
 var collectionHolder = [];
@@ -112,6 +121,7 @@ for (let i = 0; i < oplogHolder.length; ++i) {
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
 
 // init websocket
 app.socketio = require('socket.io')(server, {
