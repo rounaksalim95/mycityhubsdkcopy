@@ -1,7 +1,7 @@
 0 info it worked if it ends with ok
 1 verbose cli [ '/usr/bin/nodejs', '/usr/bin/npm', 'start' ]
-2 info using npm@2.15.8
-3 info using node@v4.4.7
+2 info using npm@2.15.9
+3 info using node@v4.5.0
 4 verbose run-script [ 'prestart', 'start', 'poststart' ]
 5 info prestart cityhub-sdk@0.1.0
 6 info start cityhub-sdk@0.1.0
@@ -15,14 +15,14 @@
 9 verbose stack     at ChildProcess.<anonymous> (/usr/lib/node_modules/npm/lib/utils/spawn.js:24:14)
 9 verbose stack     at emitTwo (events.js:87:13)
 9 verbose stack     at ChildProcess.emit (events.js:172:7)
-9 verbose stack     at maybeClose (internal/child_process.js:827:16)
+9 verbose stack     at maybeClose (internal/child_process.js:829:16)
 9 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
 10 verbose pkgid cityhub-sdk@0.1.0
 11 verbose cwd /home/rounaksalim95/cityhubsdkcopy/mycityhubsdkcopy
-12 error Linux 4.4.0-31-generic
+12 error Linux 4.4.0-34-generic
 13 error argv "/usr/bin/nodejs" "/usr/bin/npm" "start"
-14 error node v4.4.7
-15 error npm  v2.15.8
+14 error node v4.5.0
+15 error npm  v2.15.9
 16 error code ELIFECYCLE
 17 error cityhub-sdk@0.1.0 start: `node server/app.js`
 17 error Exit status 1
