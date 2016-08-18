@@ -58,7 +58,13 @@ param
   .option('-t, --type <type>', 'Sensor value type int/float/string', 'string')
   .option('-i, --interval <seconds>', 'Interval in seconds for setting sensor values (either directly or in generated file)', 0)
   .option('-f, --file <file-path>', 'JSON file with sensor values to set (dayOfWeek sun=0, time, value)', '')
-  .option('-g, --generate-file <filename>', 'Generate template JSON file with sensor values', '');
+  .option('-g, --generate-file <filename>', 'Generate template JSON file with sensor values', '')
+  .option('-b, --busDelaySensor <id>', 'Add a bud delay sensor (must specify MongoDB address, DB name, and collection)', 'BusDelayData')
+  .option('-p, --parkingSensor <id>', 'Add a parking sensor (must specify MongoDB address, DB name, collection, and port)', 'ParkingData')
+  .option('-m, --mongoAddress <uri>', 'Add a MongoDB address for the parking sensor or bus delay sensor', '127.0.0.1:27017')
+  .option('-db, --databaseName <name>', 'Add a database name for the parking sensor or bus delay sensor', 'local')
+  .option('-co, --collectionName <name>', 'Add a collection name for the parking sensor or bus delay sensor', 'local')
+  .option('-pr, --port <value>', 'Add a port to use with the parking sensor (must be 1024 or greater)', '1024');
 
 param.on('--help', function() {
   console.log('  Examples:');
@@ -75,6 +81,7 @@ param.on('--help', function() {
   console.log('    node cli/sensor.js --device ch1 --sensor TrafficDensity --file ./values/TrafficDensity.json');
   console.log('    node cli/sensor.js --generate-file ./values/TrafficDensity.json --range 10..90 --type int --interval 300');
   console.log('    node cli/sensor.js --device ch1 --sensor TrafficDensity --range 0..100 --type int --interval 10');
+  console.log('    node cli/sensor.js --parkingSensor');
 
   console.log('');
 });

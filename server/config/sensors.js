@@ -11,12 +11,14 @@ var path = require('path');
 var config = require('./environment');
 
 var devices = [
-    {id: 'TransitHub', info: '1025 16th Avenue Parking Garage, Nashville', latitude: 36.174465, longitude: -86.767960}];
+    {id: 'TransitHub', info: '1025 16th Avenue Parking Garage, Nashville', latitude: 36.174465, longitude: -86.767960},
+    {id: 'TransitHub1', info: '1025 16th Avenue Parking Garage, Nashville', latitude: 36.174465, longitude: -86.767960}];
 
+// Make sure specified ports are 1024 or above 
 var sensors = [
 	  {id: 'ParkingData', index: 1, info: 'Actual data that we need', type: 'JSON', timestamp: '1970-01-01T00:00:00.000Z', mongoAddress: 'localhost:27017', dbName: 'garageinfo', collection: 'info', WebSocketPort: '7000'},
-    {id: 'ParkingData', index: 2, info: 'Actual data that we need', type: 'JSON', timestamp: '1970-01-01T00:00:00.000Z', mongoAddress: 'localhost:27017', dbName: 'first', collection: 'readings', WebSocketPort: '8080'},
-    {id: 'BusDelayData', index: 3, info: 'Bus Delay Data', type: 'JSON', timestamp: '1970-01-01T00:00:00.000Z', mongoUri: 'localhost:27017/busDelay'}];
+    {id: 'ParkingData', index: 1, info: 'Actual data that we need', type: 'JSON', timestamp: '1970-01-01T00:00:00.000Z', mongoAddress: 'localhost:27017', dbName: 'first', collection: 'readings', WebSocketPort: '8080'},
+    {id: 'BusDelayData', index: 2, info: 'Bus Delay Data', type: 'JSON', timestamp: '1970-01-01T00:00:00.000Z', mongoAddress: 'localhost:27017', dbName: 'busDelay', collection: 'delay'}];
 
 var currentSensorDevices;
 var forecastSensorDevices = {};

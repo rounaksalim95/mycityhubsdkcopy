@@ -16,19 +16,19 @@ var database = require('./middleware/database');
 // Setup MongoDB
 var mongo = require('mongodb');
 var monk = require('monk');
-// Used for testing purposes; replace with actual DB 
-var parkingDB = monk('localhost:27017/garageinfo');
-var busDelayDB = monk('localhost:27017/busDelay');
 
+/*var parkingDB = monk('localhost:27017/garageinfo');
+var busDelayDB = monk('localhost:27017/busDelay');
+*/
 // Collection being used for ParkingData 
-var collection = parkingDB.get('info');
+/*var collection = parkingDB.get('info');*/
 
 
 // Setup server
 var app = express();
 var server = require('http').createServer(app);
 require('./config/express')(app);
-// Make our DB accessible to our router 
+/*// Make our DB accessible to our router 
 app.use(function(req, res, next) {
   req.parkingDB = parkingDB;
   next();
@@ -36,7 +36,7 @@ app.use(function(req, res, next) {
 app.use(function(req, res, next) {
   req.busDelayDB = busDelayDB;
   next();
-});
+});*/
 require('./routes')(app);
 
 // Setup MongoOplog to check for changes in the database (parking data)
@@ -50,15 +50,21 @@ var _ = require('lodash');
 // we can attach WebSocket to specified port 
 var devices = require('./config/sensors').getDevices();
 
+// Multidimensional holders to hold values for different sensors in different devices 
+// First value is for devices and second is for sensors
 var oplogHolder = []; 
 var parkingDataHolder = [];
 var collectionHolder = [];
 var websocketportHolder = [];
 var wssHolder = [];
 
-console.log('Devices length : ' + devices.length);
 for (let i = 0; i < devices.length; ++i) {
   let device = devices[i];
+  let interimOplog = [];
+  let interimData = [];
+  let interimCollection = [];
+  let interimPort = [];
+  let interimWss = [];
   for (let j = 0; j < device.sensors.length; ++j) {
     if (device.sensors[j].id == 'ParkingData') {
       let sensor = device.sensors[j];
@@ -73,13 +79,14 @@ for (let i = 0; i < devices.length; ++i) {
       collectionHolder[j] = collection;
       websocketportHolder[j] = sensor.WebSocketPort;
     }
+
   }
 }
 
 
 for (let i = 0; i < websocketportHolder.length; ++i) {
   // WebSockets for use with ParkingData 
-  var WebSocketServer = require('ws').Server,
+  let WebSocketServer = require('ws').Server,
     wss = new WebSocketServer({ port: websocketportHolder[i] });
 
   wssHolder[i] = wss;

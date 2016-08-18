@@ -7,6 +7,8 @@
 'use strict';
 
 var _ = require('lodash');
+var mongo = require('mongodb');
+var monk = require('monk');
 var devices = require('../../config/sensors').getDevices();
 var users = require('../../config/users').getUsers();
 var deviceSocket = require('./device.socket');
@@ -171,11 +173,15 @@ exports.getSensor = function(req, res) {
   if (sensorIndex === -1) {
     return res.status(404).send('sensor not found');
   }
+  var sensor = device.sensors[sensorIndex];
   // Added checks for ParkingData and BusDelayData
   if (sensorId == 'ParkingData') {
-    // Collection that holds your data; change accordingly 
-    var collection = req.parkingDB.get('info');
-    database.getParkingData(collection, res);
+    /*var parkingDB = monk('localhost:27017/garageinfo');
+    var busDelayDB = monk('localhost:27017/busDelay'); 
+    var collection = req.parkingDB.get('info');*/
+    var parkingDB = monk(sensor.mongoAddress + '/' + sensor.dbName);
+    // Get the data from the corresponding collection in the database 
+    database.getParkingData(parkingDB.get(sensor.collection), res);
   } else if (sensorId == 'BusDelayData') {
     // Collection that holds your data; change accordingly 
     var collection = req.busDelayDB.get('delay');
@@ -183,7 +189,6 @@ exports.getSensor = function(req, res) {
     var tripId = req.params.tripId;
     database.getBusDelay(collection, tripId, res);
   } else {
-    var sensor = device.sensors[sensorIndex];
     res.json(sensor);
   }
 };
