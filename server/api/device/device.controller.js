@@ -176,18 +176,15 @@ exports.getSensor = function(req, res) {
   var sensor = device.sensors[sensorIndex];
   // Added checks for ParkingData and BusDelayData
   if (sensorId == 'ParkingData') {
-    /*var parkingDB = monk('localhost:27017/garageinfo');
-    var busDelayDB = monk('localhost:27017/busDelay'); 
-    var collection = req.parkingDB.get('info');*/
-    var parkingDB = monk(sensor.mongoAddress + '/' + sensor.dbName);
-    // Get the data from the corresponding collection in the database 
+    // Access the corresponding data in the correct DB 
+    var parkingDB = monk(sensor.mongoAddress + '/' + sensor.dbName); 
     database.getParkingData(parkingDB.get(sensor.collection), res);
   } else if (sensorId == 'BusDelayData') {
-    // Collection that holds your data; change accordingly 
-    var collection = req.busDelayDB.get('delay');
     // Get the tripId that we are looking for 
     var tripId = req.params.tripId;
-    database.getBusDelay(collection, tripId, res);
+    // Access the corresponding data in the correct DB 
+    var busDelayDB = monk(sensor.mongoAddress + '/' + sensor.dbName);
+    database.getBusDelay(busDelayDB.get(sensor.collection), tripId, res);
   } else {
     res.json(sensor);
   }
