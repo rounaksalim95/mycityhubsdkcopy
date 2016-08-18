@@ -39,9 +39,9 @@ app.use(function(req, res, next) {
 });
 require('./routes')(app);
 
-// WebSockets for use with ParkingData 
+/*// WebSockets for use with ParkingData 
 var WebSocketServer = require('ws').Server,
-  wss = new WebSocketServer({ port: 1024 });
+  wss = new WebSocketServer({ port: 1024 });*/
 
 // Setup MongoOplog to check for changes in the database (parking data)
 var MongoOplog = require('mongo-oplog');
@@ -61,6 +61,8 @@ console.log(device.sensors[sensorIndex].mongoAddress);
 var oplogHolder = []; 
 var parkingDataHolder = [];
 var collectionHolder = [];
+var websocketportHolder = [];
+var wssHolder = [];
 
 console.log('Devices length : ' + devices.length);
 for (let i = 0; i < devices.length; ++i) {
@@ -77,16 +79,30 @@ for (let i = 0; i < devices.length; ++i) {
       oplogHolder[j] = oplog;
       parkingDataHolder[j] = parkingData;
       collectionHolder[j] = collection;
+      websocketportHolder[j] = sensor.WebSocketPort;
     }
   }
 }
+
+
+for (let i = 0; i < websocketportHolder.length; ++i) {
+  // WebSockets for use with ParkingData 
+  var WebSocketServer = require('ws').Server,
+    wss = new WebSocketServer({ port: websocketportHolder[i] });
+
+  wssHolder[i] = wss;
+  console.log(wssHolder[i]);
+}
+
+console.log(wssHolder[1]);
+
 
 for (let i = 0; i < oplogHolder.length; ++i) {
   // Setup the listener for any updates to the database
       oplogHolder[i].on('update', function (doc) {
         database.getParkingDataWebSockets(collection, function(err, result) {
           // Broadcast the message to every client 
-          wss.clients.forEach(function (client) {
+          wssHolder[i].clients.forEach(function (client) {
             client.send(JSON.stringify(result));
           });
         });
@@ -96,7 +112,7 @@ for (let i = 0; i < oplogHolder.length; ++i) {
         database.getParkingDataWebSockets(parkingDataHolder[i].get(collectionHolder[i]), function(err, result) {
           console.log('INSERTED INTO : ' + collectionHolder[i]);
           // Broadcast the message to every client 
-          wss.clients.forEach(function (client) {
+          wssHolder[i].clients.forEach(function (client) {
             client.send(JSON.stringify(result));
           });
         });
@@ -107,7 +123,7 @@ for (let i = 0; i < oplogHolder.length; ++i) {
           console.log('DELETED FROM : ' + collectionHolder[i]);
           console.log(JSON.stringify(result));
           // Broadcast the message to every client 
-          wss.clients.forEach(function (client) {
+          wssHolder[i].clients.forEach(function (client) {
             client.send(JSON.stringify(result));
           });
         });
