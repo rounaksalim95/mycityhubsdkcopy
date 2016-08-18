@@ -60,8 +60,8 @@ param
   .option('-f, --file <file-path>', 'JSON file with sensor values to set (dayOfWeek sun=0, time, value)', '')
   .option('-g, --generate-file <filename>', 'Generate template JSON file with sensor values', '')
   .option('-m, --mongoAddress <uri>', 'Add a MongoDB address for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', '127.0.0.1:27017')
-  .option('-n, --databaseName <name>', 'Add a database name for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', 'local')
-  .option('-l, --collectionName <name>', 'Add a collection name for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', 'local')
+  .option('-n, --database <name>', 'Add a database name for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', 'local')
+  .option('-l, --collection <name>', 'Add a collection name for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', 'local')
   .option('-p, --port <value>', 'Add a port to use with the parking sensor (must be 1024 or greater) [for use with ParkingData and BusDelayData sensors]', '1024');
 
 param.on('--help', function() {
@@ -79,7 +79,8 @@ param.on('--help', function() {
   console.log('    node cli/sensor.js --device ch1 --sensor TrafficDensity --file ./values/TrafficDensity.json');
   console.log('    node cli/sensor.js --generate-file ./values/TrafficDensity.json --range 10..90 --type int --interval 300');
   console.log('    node cli/sensor.js --device ch1 --sensor TrafficDensity --range 0..100 --type int --interval 10');
-  console.log('    node cli/sensor.js --parkingSensor');
+  console.log('    node cli/sensor.js --device TransitHub --sensor BusDelayData --mongoAddress "localhost:27017" --database "busDelay" --collection "delay"');
+  console.log('    node cli/sensor.js --device TransitHub --sensor ParkingData --mongoAddress "localhost:27017" --database "garageinfo" --collection "info" --port 7000');
 
   console.log('');
 });
@@ -319,16 +320,19 @@ else if (param.generateFile) {
 }
 else if (param.sensor === "BusDelayData") {
   // Set request parameters with the needed values 
-  console.log("WE MADE IT HERE");
-  console.log(param.device);
   var path = '/' + param.device + '/' + param.sensor;
   var uri = param.uri + path;
-  var optObj = {uri: uri, method: 'POST', json: true, timeout: 10000 /* in ms */, proxy: undefined, body: {"mongoAddress" : param.mongoAddress, "dbName" : param.databaseName, "collection" : param.collectionName}};
+  var optObj = {uri: uri, method: 'POST', json: true, timeout: 10000 /* in ms */, proxy: undefined, body: {"mongoAddress" : param.mongoAddress, "dbName" : param.database, "collection" : param.collection}};
   // Send the request
   sendNextValue();
 }
-else if (param.parkingSensor) {
-
+else if (param.sensor === "ParkingData") {
+  // Set request parameters with the needed values 
+  var path = '/' + param.device + '/' + param.sensor;
+  var uri = param.uri + path;
+  var optObj = {uri: uri, method: 'POST', json: true, timeout: 10000 /* in ms */, proxy: undefined, body: {"mongoAddress" : param.mongoAddress, "dbName" : param.database, "collection" : param.collection, "WebSocketPort" : param.port}};
+  // Send the request
+  sendNextValue();
 }
 else {
   // send POST requests for setting sensor values (single value or random values)

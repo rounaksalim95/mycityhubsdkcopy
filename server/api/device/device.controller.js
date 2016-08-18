@@ -199,7 +199,7 @@ exports.setSensor = function(req, res) {
   var deviceId = req.params.deviceId;
   var sensorId = req.params.sensorId;
   var uploadedSensor = req.body;
-  console.log('setSensor ' + deviceId + '/' + sensorId + '=', uploadedSensor);
+  console.log('setSensor ' + deviceId + '/' + sensorId + ' =', uploadedSensor);
   var deviceIndex = _.findIndex(devices, {id: deviceId});
   if (deviceIndex === -1) {
     return res.status(404).send();
