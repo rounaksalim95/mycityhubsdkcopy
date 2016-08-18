@@ -10,7 +10,6 @@ function getParkingData(collection, res) {
 
 // Used to get ParkingData from the database (for use with WebSockets)
 function getParkingDataWebSockets(collection, callback) {
-	// Get the data sorted by parkingSpotID in ascending order
 	collection.find({}, {}, function (e, docs) {
 		callback(null, docs);
 	});

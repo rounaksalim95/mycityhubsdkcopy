@@ -6,13 +6,7 @@
  */
 'use strict';
 
-var users = [
-    {id: 'user1', email: 'user1@mail.com', password: 'user1.pass', info: 'test user'},
-    {id: 'user2', email: 'user2@mail.com', password: 'user2.pass', info: 'test user'},
-    {id: 'user3', email: 'user3@mail.com', password: 'user3.pass', info: 'test user'},
-    {id: 'user4', email: 'user4@mail.com', password: 'user4.pass', info: 'test user'},
-    {id: 'user5', email: 'user5@mail.com', password: 'user5.pass', info: 'test user'}, 
-	{id: 'wo123', email: 'srear@mail.com', password: '12345.pass', info: 'Tester 12'}];
+var users = [];
 
 var currentUsers;
 

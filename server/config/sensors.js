@@ -11,30 +11,12 @@ var path = require('path');
 var config = require('./environment');
 
 var devices = [
-    {id: 'ch1', info: 'Münchner Freiheit, Munich', latitude: 48.162553, longitude: 11.586440},
-    {id: 'ch2', info: 'Odeonsplatz, Munich', latitude: 48.1419417, longitude: 11.5759829},
-    {id: 'ch3', info: 'Marienplatz, Munich', latitude: 48.1373968, longitude: 11.5732598},
-    {id: 'ch4', info: 'Karlsplatz, Munich', latitude: 48.1388877, longitude: 11.5642435},
-    {id: 'ch5', info: 'Sendlinger Tor Platz, Munich', latitude: 48.134017, longitude: 11.567401},
-    {id: 'ch6', info: 'Theresienwiese - Oktoberfest, Munich', latitude: 48.1320678, longitude: 11.5472914},
-    {id: 'ch7', info: 'Universität, Munich', latitude: 48.1500645, longitude: 11.5662824},
-    {id: 'ch8', info: 'Prinzregentenplatz, Munich', latitude: 48.1277837, longitude: 11.5773546},
-    {id: 'ch9', info: 'Hauptbahnhof - Main Train Station, Munich', latitude: 48.140462, longitude: 11.5555776},
-    {id: 'ch10', info: 'Fröttmaning - Soccer Arena, Munich', latitude: 48.2131391, longitude: 11.616277}];
+    {id: 'TransitHub', info: '1025 16th Avenue Parking Garage, Nashville', latitude: 36.174465, longitude: -86.767960}];
 
 var sensors = [
-    {id: 'AvailableParkingSpaces', index: 1, info: 'Number of available parking spaces in the area, 0-500', type: 'int', isBookable: true, pricePerHour: 1, minValue: 0, maxValue: 500, value: 10, timestamp: '1970-01-01T00:00:00.000Z'},
-    {id: 'AvailableBikes', index: 2, info: 'Number of available bikes for rent in the area, 0-20', type: 'int', isBookable: true, pricePerHour: 5, minValue: 0, maxValue: 20, value: 5, timestamp: '1970-01-01T00:00:00.000Z'},
-    {id: 'Temperature', index: 3, info: 'Temperature sensor, -150 - +150 Celsius/Fahrenheit', type: 'float', minValue: -150.0, maxValue: 150.0, value: 20.0, timestamp: '1970-01-01T00:00:00.000Z'},
-    {id: 'Humidity', index: 4, info: 'Atmospheric relative humidity sensor, 10 - 95% RH', type: 'float', minValue: 10.0, maxValue: 95.0, value: 40.0, timestamp: '1970-01-01T00:00:00.000Z'},
-    {id: 'UVB', index: 5, info: 'Ultraviolet light sensor that responds primarily to UVB radiation, 290-320 nm', type: 'float', minValue: 290.0, maxValue: 320.0, value: 300.0, timestamp: '1970-01-01T00:00:00.000Z'},
-    {id: 'AmbientNoise', index: 6, info: 'Ambient noise sensor in Decibels 0-200 dBA', type: 'float', minValue: 0.0, maxValue: 200.0, value: 100.0, timestamp: '1970-01-01T00:00:00.000Z'},
-    {id: 'CarbonDioxide', index: 7, info: 'Carbon Dioxide Sensor, 0-2000ppm', type: 'int', minValue: 0, maxValue: 2000, value: 500, timestamp: '1970-01-01T00:00:00.000Z'},
-    {id: 'PersonProximity', index: 8, info: '(Person) proximity sensor based e.g. on ultra-sound sensor, 0-800cm', type: 'int', minValue: 0, maxValue: 800, value: 800, timestamp: '1970-01-01T00:00:00.000Z'},
-    {id: 'TrafficDensity', index: 9, info: 'Normalized traffic density, 0-100', type: 'int', minValue: 0, maxValue: 100, value: 50, timestamp: '1970-01-01T00:00:00.000Z'},
-    {id: 'Events', index: 10, info: 'Current events in the area', type: 'string', value: 'Market,Concert', timestamp: '1970-01-01T00:00:00.000Z'}, 
-	  {id: 'ParkingData', index: 11, info: 'Actual data that we need', type: 'JSON', value: {'a':'b'}, timestamp: '1970-01-01T00:00:00.000Z'},
-    {id: 'BusDelayData', index: 12, info: 'Bus Delay Data', type: 'JSON', timestamp: '1970-01-01T00:00:00.000Z'}];
+	  {id: 'ParkingData', index: 1, info: 'Actual data that we need', type: 'JSON', timestamp: '1970-01-01T00:00:00.000Z', mongoAddress: 'localhost:27017', dbName: 'first', collection: 'readings', WebSocketPort: '8080'},
+    {id: 'ParkingData', index: 2, info: 'Actual data that we need', type: 'JSON', timestamp: '1970-01-01T00:00:00.000Z', mongoAddress: 'localhost:27017', dbName: 'garageinfo', collection: 'info', WebSocketPort: '7000'},
+    {id: 'BusDelayData', index: 3, info: 'Bus Delay Data', type: 'JSON', timestamp: '1970-01-01T00:00:00.000Z', mongoUri: 'localhost:27017/busDelay'}];
 
 var currentSensorDevices;
 var forecastSensorDevices = {};

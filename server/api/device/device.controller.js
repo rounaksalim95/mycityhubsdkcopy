@@ -171,6 +171,7 @@ exports.getSensor = function(req, res) {
   if (sensorIndex === -1) {
     return res.status(404).send('sensor not found');
   }
+  // Added checks for ParkingData and BusDelayData
   if (sensorId == 'ParkingData') {
     // Collection that holds your data; change accordingly 
     var collection = req.parkingDB.get('info');
