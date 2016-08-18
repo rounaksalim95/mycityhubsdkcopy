@@ -45,36 +45,37 @@ var wssHolder = [];
 
 for (let i = 0; i < devices.length; ++i) {
   let device = devices[i];
-  let interimOplog = [];
-  let interimData = [];
-  let interimCollection = [];
-  let interimPort = [];
-  let interimWss = [];
-  for (let j = 0; j < device.sensors.length; ++j) {
-    if (device.sensors[j].id == 'ParkingData') {
-      let sensor = device.sensors[j];
-      let collection = sensor.collection;
-      let dbName = sensor.dbName;
-      let mongoUri = sensor.mongoAddress + '/' + dbName;
-      let parkingData = monk(mongoUri);
-      let oplog = MongoOplog('mongodb://' + mongoUri + '/local', { ns: dbName + '.' + collection}).tail();
-      
-      oplogHolder[j] = oplog;
-      parkingDataHolder[j] = parkingData;
-      collectionHolder[j] = collection;
-      websocketportHolder[j] = sensor.WebSocketPort;
-    }
+  let sensorIndex = _.findIndex(device.sensors, {id: "ParkingData"});
 
+  // Setup if sensor exists 
+  if (sensorIndex !== -1) {
+    let sensor = device.sensors[sensorIndex];
+    let collection = sensor.collection;
+    let dbName = sensor.dbName;
+    let mongoUri = sensor.mongoAddress + '/' + dbName;
+    let parkingData = monk(mongoUri);
+    let oplog = MongoOplog('mongodb://' + mongoUri + '/local', { ns: dbName + '.' + collection}).tail();
+      
+    oplogHolder[i] = oplog;
+    parkingDataHolder[i] = parkingData;
+    collectionHolder[i] = collection;
+    websocketportHolder[i] = sensor.WebSocketPort;
   }
 }
 
-
 for (let i = 0; i < websocketportHolder.length; ++i) {
-  // WebSockets for use with ParkingData 
-  let WebSocketServer = require('ws').Server,
+  // Check to see if port has already been used 
+  let firstIndex = _.indexOf(websocketportHolder, websocketportHolder[i])
+  if (firstIndex < i) {
+    console.log('Port : ' + websocketportHolder[i] + ' is already being used by ' + devices[firstIndex].id);
+  }
+  else {
+    // Initialize WebSockets for use with ParkingData 
+    let WebSocketServer = require('ws').Server,
     wss = new WebSocketServer({ port: websocketportHolder[i] });
 
-  wssHolder[i] = wss;
+    wssHolder[i] = wss;
+  }
 }
 
 
