@@ -39,10 +39,6 @@ app.use(function(req, res, next) {
 });
 require('./routes')(app);
 
-/*// WebSockets for use with ParkingData 
-var WebSocketServer = require('ws').Server,
-  wss = new WebSocketServer({ port: 1024 });*/
-
 // Setup MongoOplog to check for changes in the database (parking data)
 var MongoOplog = require('mongo-oplog');
 
@@ -53,10 +49,6 @@ var _ = require('lodash');
 // Get the devices to check for ParkingData sensor so that 
 // we can attach WebSocket to specified port 
 var devices = require('./config/sensors').getDevices();
-var device = devices[0];
-var sensorIndex = _.findIndex(device.sensors, {id: 'ParkingData'});
-console.log(sensorIndex);
-console.log(device.sensors[sensorIndex].mongoAddress);
 
 var oplogHolder = []; 
 var parkingDataHolder = [];
@@ -91,10 +83,7 @@ for (let i = 0; i < websocketportHolder.length; ++i) {
     wss = new WebSocketServer({ port: websocketportHolder[i] });
 
   wssHolder[i] = wss;
-  console.log(wssHolder[i]);
 }
-
-console.log(wssHolder[1]);
 
 
 for (let i = 0; i < oplogHolder.length; ++i) {
@@ -121,7 +110,6 @@ for (let i = 0; i < oplogHolder.length; ++i) {
       oplogHolder[i].on('delete', function (doc) {
         database.getParkingDataWebSockets(parkingDataHolder[i].get(collectionHolder[i]), function(err, result) {
           console.log('DELETED FROM : ' + collectionHolder[i]);
-          console.log(JSON.stringify(result));
           // Broadcast the message to every client 
           wssHolder[i].clients.forEach(function (client) {
             client.send(JSON.stringify(result));
