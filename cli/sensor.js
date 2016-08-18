@@ -44,7 +44,7 @@ function parseChoices(val) {
   return choiceArray;
 }
 
-var DEFAULT_INTERVAL = 10; // 10s
+var DEFAULT_INTERVAL = 14; // 10s
 
 // command line parameter specification
 param
@@ -59,12 +59,10 @@ param
   .option('-i, --interval <seconds>', 'Interval in seconds for setting sensor values (either directly or in generated file)', 0)
   .option('-f, --file <file-path>', 'JSON file with sensor values to set (dayOfWeek sun=0, time, value)', '')
   .option('-g, --generate-file <filename>', 'Generate template JSON file with sensor values', '')
-  .option('-b, --busDelaySensor <id>', 'Add a bud delay sensor (must specify MongoDB address, DB name, and collection)', 'BusDelayData')
-  .option('-p, --parkingSensor <id>', 'Add a parking sensor (must specify MongoDB address, DB name, collection, and port)', 'ParkingData')
-  .option('-m, --mongoAddress <uri>', 'Add a MongoDB address for the parking sensor or bus delay sensor', '127.0.0.1:27017')
-  .option('-db, --databaseName <name>', 'Add a database name for the parking sensor or bus delay sensor', 'local')
-  .option('-co, --collectionName <name>', 'Add a collection name for the parking sensor or bus delay sensor', 'local')
-  .option('-pr, --port <value>', 'Add a port to use with the parking sensor (must be 1024 or greater)', '1024');
+  .option('-m, --mongoAddress <uri>', 'Add a MongoDB address for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', '127.0.0.1:27017')
+  .option('-n, --databaseName <name>', 'Add a database name for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', 'local')
+  .option('-l, --collectionName <name>', 'Add a collection name for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', 'local')
+  .option('-p, --port <value>', 'Add a port to use with the parking sensor (must be 1024 or greater) [for use with ParkingData and BusDelayData sensors]', '1024');
 
 param.on('--help', function() {
   console.log('  Examples:');
@@ -318,6 +316,19 @@ if (param.file) {
 else if (param.generateFile) {
   // generate JSON template file
   generateSensorJsonValuesTemplate();
+}
+else if (param.sensor === "BusDelayData") {
+  // Set request parameters with the needed values 
+  console.log("WE MADE IT HERE");
+  console.log(param.device);
+  var path = '/' + param.device + '/' + param.sensor;
+  var uri = param.uri + path;
+  var optObj = {uri: uri, method: 'POST', json: true, timeout: 10000 /* in ms */, proxy: undefined, body: {"mongoAddress" : param.mongoAddress, "dbName" : param.databaseName, "collection" : param.collectionName}};
+  // Send the request
+  sendNextValue();
+}
+else if (param.parkingSensor) {
+
 }
 else {
   // send POST requests for setting sensor values (single value or random values)

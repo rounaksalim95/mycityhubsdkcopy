@@ -210,9 +210,12 @@ exports.setSensor = function(req, res) {
     return res.status(404).send('sensor not found');
   }
   // check sensor value range
-  if (!uploadedSensor.value && uploadedSensor.value !== 0 && uploadedSensor.value !== '') {
+  // added check to make sure it doesn't catch ParkingData or BusDelayData sensors
+  if (sensorId != "ParkingData" && sensorId != "BusDelayData") {
+    if (!uploadedSensor.value && uploadedSensor.value !== 0 && uploadedSensor.value !== '') {
     console.log('Sensor value missing: ' + sensorId + ' ' + uploadedSensor.value);
     return res.status(400).send('sensor value missing');
+  }
   }
 
   if (device.sensors[sensorIndex].type === 'float' || device.sensors[sensorIndex].type === 'int') {
