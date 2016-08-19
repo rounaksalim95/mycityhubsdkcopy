@@ -51,7 +51,7 @@ function setWebSockets(devices) {
       wssGlobalHolder[i] = wssGlobalHolder[firstIndex];
     }
     else {
-      // Initialize WebSockets for use with ParkingData 
+      // Initialize WebSockets for use with ParkingData   ws://localhost:3545
       let WebSocketServer = require('ws').Server,
       wss = new WebSocketServer({ port: websocketportGlobalHolder[i] });
 
@@ -97,20 +97,26 @@ function setMongoOplog() {
 
 // Sets up everything for ParkingData sensor 
 exports.setupParkingDataSensor = function() {
-  // End connection if we're already tailing 
+  // End connection if we're already tailing and close all websockets so that we can reopen them 
   if (oplogGlobalHolder.length > 0) {
     console.log('CLEARING OPLOG');
     for (let i = 0; i < oplogGlobalHolder.lenght; ++i) {
+      // End all tailing connections 
       oplogGlobalHolder[i].stop(function() {
         console.log('Stopped tailing ' + collectionGlobalHolder[i]);
       });
+
+      // Delete all instances of websockets
+      wssGlobalHolder[i].close();
     }
+    
     oplogGlobalHolder = []; 
     parkingDataGlobalHolder = [];
     collectionGlobalHolder = [];
     websocketportGlobalHolder = [];
     wssGlobalHolder = [];
   }
+
 
   console.log('CLEARED OPLOG');
 
