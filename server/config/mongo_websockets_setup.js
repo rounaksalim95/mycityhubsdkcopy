@@ -112,7 +112,12 @@ exports.setupParkingDataSensor = function() {
     wssGlobalHolder = [];
   }
 
+  console.log('CLEARED OPLOG');
+
   getOplogWebsocketsData();
+  console.log('GOT DATA');
   setWebSockets(devices);
+  console.log('SET UP WEBSOCKETS');
   setMongoOplog();
+  console.log('SET UP MONGO-OPLOG');  
 }
