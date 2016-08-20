@@ -18,6 +18,9 @@ var oplogWebsockets = require('../../config/mongo_websockets_setup');
 
 var MQTT_PUBLISH_OPTS = {retain: true};
 
+// Used to keep track of ports already used 
+var websocketsPorts = [];
+
 function checkValueRange(value, min, max) {
   var val;
   try {
@@ -210,7 +213,7 @@ exports.setSensor = function(req, res) {
   }
   // check sensor value range
   // added check to make sure it doesn't catch ParkingData or BusDelayData sensors
-  if (sensorId != "ParkingData" && sensorId != "BusDelayData") {
+  if (sensorId != 'ParkingData' && sensorId != 'BusDelayData') {
     if (!uploadedSensor.value && uploadedSensor.value !== 0 && uploadedSensor.value !== '') {
     console.log('Sensor value missing: ' + sensorId + ' ' + uploadedSensor.value);
     return res.status(400).send('sensor value missing');
@@ -233,6 +236,18 @@ exports.setSensor = function(req, res) {
     // add timestamp to sensor
     uploadedSensor.timestamp = new Date().toISOString();
   }
+
+  // Check is sensor being updated is ParkingData and if it is then
+  // set up websockets and oplog listeners
+  let sensor = device.sensors[sensorIndex]; 
+  if (sensorId = 'ParkingData' && !sensor.configured) {
+    oplogWebsockets.setupParkingDataSensor(sensor, websocketsPorts);
+    websocketsPorts.push(sensor.WebSocketPort);
+    sensor.configured = true;
+  } 
+  else {
+    console.log('This sensor has already been configured.');
+  }
   _.merge(device.sensors[sensorIndex], uploadedSensor);
   //console.log('merged sensor data: ', device.sensors[sensorIndex])
 
@@ -245,9 +260,6 @@ exports.setSensor = function(req, res) {
 
   // notify modified sensor value through websocket
   deviceSocket.onDeviceChange(device);
-
-  // Reset mongo-oplog listeners and websockets 
-  oplogWebsockets.setupParkingDataSensor();
 
   res.json(device.sensors[sensorIndex]);
 };

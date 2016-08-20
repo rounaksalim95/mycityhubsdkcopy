@@ -16,7 +16,7 @@ var _ = require('lodash');
 // we can attach WebSocket to specified port 
 var devices = require('./sensors').getDevices();
 
-// Gets the data required for setting up the mongo-oplog and WebSockets 
+/*// Gets the data required for setting up the mongo-oplog and WebSockets 
 function getOplogWebsocketsData() {
   // Get all the requied data from ParkingData sensor in all devices  
   for (let i = 0; i < devices.length; ++i) {
@@ -41,7 +41,7 @@ function getOplogWebsocketsData() {
 };
 
 // Sets up the WebSockets 
-function setWebSockets(devices) {
+function setWebSockets1(devices) {
   for (let i = 0; i < websocketportGlobalHolder.length; ++i) {
     // Check to see if port has already been used 
     let firstIndex = _.indexOf(websocketportGlobalHolder, websocketportGlobalHolder[i])
@@ -53,15 +53,80 @@ function setWebSockets(devices) {
     else {
       // Initialize WebSockets for use with ParkingData   ws://localhost:3545
       let WebSocketServer = require('ws').Server,
-      wss = new WebSocketServer({ port: websocketportGlobalHolder[i] });
+        wss = new WebSocketServer({ port: websocketportGlobalHolder[i] });
 
       wssGlobalHolder[i] = wss;
     }
   }
+}*/
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function setWebSockets(sensor, websocketsPorts) {
+  let port = sensor.WebSocketPort;
+  let configured = false; 
+  if (_.indexOf(websocketsPorts, port) === -1) {
+    configured = true; 
+    var WebSocketServer = require('ws').Server,
+      wss = new WebSocketServer({ port: port });
+  } else {
+    wss = null;
+  }
+  var obj = {wss : wss, configured : configured};
+  return obj;
 }
 
-// Sets up the oplog listeners 
-function setMongoOplog() {
+function setMongoOplog(sensor, wss) {
+
+  let collection = sensor.collection;
+  let dbName = sensor.dbName;
+  let mongoUri = sensor.mongoAddress + '/' + dbName;
+  let parkingData = monk(mongoUri);
+  let oplog = MongoOplog('mongodb://' + mongoUri + '/local', { ns: dbName + '.' + collection}).tail();
+        
+  // Set all the oplog listeners 
+  oplog.on('update', function (doc) {
+        database.getParkingDataWebSockets(collection, function(err, result) {
+          // Broadcast the message to every client 
+          wss.clients.forEach(function (client) {
+            client.send(JSON.stringify(result));
+          });
+        });
+      });
+
+  oplog.on('insert', function (doc) {
+      database.getParkingDataWebSockets(collection, function(err, result) {
+        console.log('INSERTED INTO : ' + collection);
+        // Broadcast the message to every client 
+        wss.clients.forEach(function (client) {
+          client.send(JSON.stringify(result));
+        });
+      });
+    });
+
+    oplog.on('delete', function (doc) {
+      database.getParkingDataWebSockets(collection, function(err, result) {
+        console.log('DELETED FROM : ' + collection);
+        // Broadcast the message to every client 
+        wss.clients.forEach(function (client) {
+          client.send(JSON.stringify(result));
+        });
+      });
+    });
+}
+
+exports.setupParkingDataSensor = function(sensor, websocketsPorts) {
+  let obj = setWebSockets(sensor, websocketsPorts);
+  if (obj.configured) {
+    setMongoOplog(sensor, obj.wss);
+  } 
+  else {
+    console.log('Port ' + sensor.WebSocketPort + ' is already in use. Sensor not configured.');
+  }
+}
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+/*// Sets up the oplog listeners 
+function setMongoOplog1() {
   for (let i = 0; i < oplogGlobalHolder.length; ++i) {
   // Setup the listener for any updates to the database
       oplogGlobalHolder[i].on('update', function (doc) {
@@ -93,9 +158,9 @@ function setMongoOplog() {
         });
       });
   }
-};
+};*/
 
-// Sets up everything for ParkingData sensor 
+/*// Sets up everything for ParkingData sensor 
 exports.setupParkingDataSensor = function() {
   // End connection if we're already tailing and close all websockets so that we can reopen them 
   if (oplogGlobalHolder.length > 0) {
@@ -126,4 +191,4 @@ exports.setupParkingDataSensor = function() {
   console.log('SET UP WEBSOCKETS');
   setMongoOplog();
   console.log('SET UP MONGO-OPLOG');  
-}
+}*/

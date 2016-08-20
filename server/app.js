@@ -10,15 +10,15 @@ console.log('==> NODE_ENV =', process.env.NODE_ENV);
 var express = require('express');
 var config = require('./config/environment');
 
-// Global variables that hold the values required for setting up mongo-oplog and websockets 
+/*// Global variables that hold the values required for setting up mongo-oplog and websockets 
 global.oplogGlobalHolder = []; 
 global.parkingDataGlobalHolder = [];
 global.collectionGlobalHolder = [];
 global.websocketportGlobalHolder = [];
-global.wssGlobalHolder = [];
+global.wssGlobalHolder = [];*/
 
-var oplogWebsockets = require('./config/mongo_websockets_setup');
-oplogWebsockets.setupParkingDataSensor();
+/*var oplogWebsockets = require('./config/mongo_websockets_setup');
+oplogWebsockets.setupParkingDataSensor();*/
 
 // Setup server
 var app = express();
