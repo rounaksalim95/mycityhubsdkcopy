@@ -44,7 +44,7 @@ function parseChoices(val) {
   return choiceArray;
 }
 
-var DEFAULT_INTERVAL = 14; // 10s
+var DEFAULT_INTERVAL = 15; // 10s
 
 // command line parameter specification
 param
@@ -62,7 +62,8 @@ param
   .option('-m, --mongoAddress <uri>', 'Add a MongoDB address for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', '127.0.0.1:27017')
   .option('-n, --database <name>', 'Add a database name for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', 'local')
   .option('-l, --collection <name>', 'Add a collection name for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', 'local')
-  .option('-p, --port <value>', 'Add a port to use with the parking sensor (must be 1024 or greater) [for use with ParkingData and BusDelayData sensors]', '1024');
+  .option('-p, --port <value>', 'Add a port to use with the parking sensor (must be 1024 or greater) [for use with ParkingData and BusDelayData sensors]', '1024')
+  .option('-x, --configure', 'Configure all the ParkingData sensors (only use after you\'re done setting up all sensors)', '');
 
 param.on('--help', function() {
   console.log('  Examples:');
@@ -81,6 +82,7 @@ param.on('--help', function() {
   console.log('    node cli/sensor.js --device ch1 --sensor TrafficDensity --range 0..100 --type int --interval 10');
   console.log('    node cli/sensor.js --device TransitHub --sensor BusDelayData --mongoAddress "localhost:27017" --database "busDelay" --collection "delay"');
   console.log('    node cli/sensor.js --device TransitHub --sensor ParkingData --mongoAddress "localhost:27017" --database "garageinfo" --collection "info" --port 7000');
+  console.log('    node cli/sensor.js --configure');
 
   console.log('');
 });
@@ -300,6 +302,11 @@ function createCronJobsSendRequest(values) {
     nJobs++;
   } // for
   console.log('--------------------------------------------------------------------------------------------------');
+}
+
+// Configure all the ParkingData sensors with websockets and oplog listeners  
+if (param.configure) {
+
 }
 
 var counter = 0;
