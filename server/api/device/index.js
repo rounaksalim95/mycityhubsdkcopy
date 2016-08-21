@@ -13,6 +13,7 @@ var router = express.Router();
 
 router.get('/', controller.index);
 router.get('/reset', controller.index);
+router.post('/configure', controller.configure);
 router.get('/:deviceId', controller.getDevice);
 router.post('/:deviceId', controller.setDevice);
 router.delete('/:deviceId', controller.deleteDevice);

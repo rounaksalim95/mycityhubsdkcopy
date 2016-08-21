@@ -63,7 +63,7 @@ param
   .option('-n, --database <name>', 'Add a database name for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', 'local')
   .option('-l, --collection <name>', 'Add a collection name for the parking sensor or bus delay sensor [for use with ParkingData and BusDelayData sensors]', 'local')
   .option('-p, --port <value>', 'Add a port to use with the parking sensor (must be 1024 or greater) [for use with ParkingData and BusDelayData sensors]', '1024')
-  .option('-x, --configure', 'Configure all the ParkingData sensors (only use after you\'re done setting up all sensors)', '');
+  .option('-x, --configure', 'Configure all the ParkingData sensors (use with --uri if not localhost) [only use after you\'re done setting up all sensors]', '');
 
 param.on('--help', function() {
   console.log('  Examples:');
@@ -82,7 +82,7 @@ param.on('--help', function() {
   console.log('    node cli/sensor.js --device ch1 --sensor TrafficDensity --range 0..100 --type int --interval 10');
   console.log('    node cli/sensor.js --device TransitHub --sensor BusDelayData --mongoAddress "localhost:27017" --database "busDelay" --collection "delay"');
   console.log('    node cli/sensor.js --device TransitHub --sensor ParkingData --mongoAddress "localhost:27017" --database "garageinfo" --collection "info" --port 7000');
-  console.log('    node cli/sensor.js --configure');
+  console.log('    node cli/sensor.js --uri [your uri] --configure');
 
   console.log('');
 });
@@ -304,10 +304,6 @@ function createCronJobsSendRequest(values) {
   console.log('--------------------------------------------------------------------------------------------------');
 }
 
-// Configure all the ParkingData sensors with websockets and oplog listeners  
-if (param.configure) {
-
-}
 
 var counter = 0;
 var values;
@@ -340,6 +336,14 @@ else if (param.sensor === "ParkingData") {
   var optObj = {uri: uri, method: 'POST', json: true, timeout: 10000 /* in ms */, proxy: undefined, body: {"mongoAddress" : param.mongoAddress, "dbName" : param.database, "collection" : param.collection, "WebSocketPort" : param.port}};
   // Send the request
   sendNextValue();
+}
+// Configure all the ParkingData sensors with websockets and oplog listeners  
+else if (param.configure) {
+  var path = '/configure';
+  var uri = param.uri + path; 
+  var optObj = {uri: uri, method: 'POST', json: true, timeout: 10000 /* in ms */, proxy: undefined};
+  // Send the request 
+  sendRequest(optObj, 0);
 }
 else {
   // send POST requests for setting sensor values (single value or random values)
