@@ -210,7 +210,6 @@ exports.getSensor = function(req, res) {
 
 // Set device sensor
 exports.setSensor = function(req, res) {
-  //console.log('setSensor');
   var deviceId = req.params.deviceId;
   var sensorId = req.params.sensorId;
   var uploadedSensor = req.body;
@@ -250,17 +249,6 @@ exports.setSensor = function(req, res) {
     uploadedSensor.timestamp = new Date().toISOString();
   }
 
-  /*// Check is sensor being updated is ParkingData and if it is then
-  // set up websockets and oplog listeners
-  let sensor = device.sensors[sensorIndex]; 
-  if (sensorId = 'ParkingData' && !sensor.configured) {
-    oplogWebsockets.setupParkingDataSensor(sensor, websocketsPorts);
-    websocketsPorts.push(sensor.WebSocketPort);
-    sensor.configured = true;
-  } 
-  else {
-    console.log('This sensor has already been configured.');
-  }*/
   _.merge(device.sensors[sensorIndex], uploadedSensor);
   //console.log('merged sensor data: ', device.sensors[sensorIndex])
 
@@ -477,4 +465,3 @@ exports.deleteSensor = function(req, res) {
 
   return res.json(removedSensors);
 };
-

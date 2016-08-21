@@ -2,6 +2,7 @@
 
 var mongo = require('mongodb');
 
+// Used to get ParkingData from the databse (for GET request)
 function getParkingData(collection, res) {
 	collection.find({}, {}, function (e, docs) {
 		res.json(docs);
@@ -15,6 +16,7 @@ function getParkingDataWebSockets(collection, callback) {
 	});
 }
 
+// Used to get BusDelayData from the database (for GET request)
 function getBusDelay(collection, tripId, res) {
 	collection.find({trip_id : tripId}, {}, function(e, docs) {
 		res.json(docs);
