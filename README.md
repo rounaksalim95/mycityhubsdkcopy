@@ -113,7 +113,7 @@ Overview of the project structure
   - After this all sensors will be configured as desired (please note that you can only configure your sensors once)  
   
  # How to use new sensors:-
-  - Go to server/config/sensors.js and add all the devices that you will be using (All these devices have the same sensors [ParkingData and BusDelayData])
+  - Go to server/config/sensors.js and add all the devices that you will be using to the list of devices (all these devices have the same sensors [ParkingData and BusDelayData])
   - Then start the application using :   
   ``` 
       npm start
