@@ -95,7 +95,7 @@ Overview of the project structure
 | ./values | JSON files containing sample/forecast values for sensors (array of {dayOfWeek: 0-6, time: 0-24:0-59:0-59, value: 1234}) |
 
 # Updates to City Hub SDK:-  
-  - Added extra enpoints in device.controller.js and index.js (device) to make available requests for parking and bus delay data 
+  - Added extra endpoints in device.controller.js and index.js (device) to make available requests for parking and bus delay data 
   - Added dependencies on mongo-oplog, mongodb, and ws, for making data available more dynamically
   - Needed mongo-oplog so that we can get notified when the data in the database has been updated 
   - Needed ws for WebSockets (ws since it's one of the fastest for node.js and because its speed allows us to handle a greater number of connections)
