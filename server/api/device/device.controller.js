@@ -195,13 +195,13 @@ exports.getSensor = function(req, res) {
   // Added checks for ParkingData and BusDelayData
   if (sensorId == 'ParkingData') {
     // Access the corresponding data in the correct DB 
-    var parkingDB = monk(sensor.mongoAddress + '/' + sensor.dbName); 
+    let parkingDB = monk(sensor.mongoAddress + '/' + sensor.dbName); 
     database.getParkingData(parkingDB.get(sensor.collection), res);
   } else if (sensorId == 'BusDelayData') {
     // Get the tripId that we are looking for 
-    var tripId = req.params.tripId;
+    let tripId = req.params.tripId;
     // Access the corresponding data in the correct DB 
-    var busDelayDB = monk(sensor.mongoAddress + '/' + sensor.dbName);
+    let busDelayDB = monk(sensor.mongoAddress + '/' + sensor.dbName);
     database.getBusDelay(busDelayDB.get(sensor.collection), tripId, res);
   } else {
     res.json(sensor);
