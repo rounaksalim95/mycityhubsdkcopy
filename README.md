@@ -103,8 +103,8 @@ Overview of the project structure
   - Cleared users list for now since we didn't need any 
   - Cleared the old sensors list and added our own sensors (ParkingData and BusDelayData). These sensors delay with the data we are interested in for now. 
   - These new sensors contain the uri to the MongoDB and other information such as DB name, collection name, and WebSocket port that the user wants to bind to
-  - Added more options in cli/sensor.js to accomodate new sensors. Also included some examples in that are logged to the console 
-  - Added mongo_websockets_setup.js under server/config that contains methods which help configure the oplog listeners and the WebSockets for the ParkingData sensors after they user has editted all of them using node cli/sensor.js  
+  - Added more options in cli/sensor.js to accommodate new sensors. Also included some examples in that are logged to the console 
+  - Added mongo_websockets_setup.js under server/config that contains methods which help configure the oplog listeners and the WebSockets for the ParkingData sensors after they user has edited all of them using node cli/sensor.js  
   
  # How to use new sensors:-
   - Go to server/config/sensors.js and add all the devices that you will be using to the list of devices (all these devices have the same sensors [ParkingData and BusDelayData])
